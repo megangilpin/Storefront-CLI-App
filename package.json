@@ -1,0 +1,24 @@
+{
+  "name": "storefront-cli-app",
+  "version": "1.0.0",
+  "description": "Takes in orders from customers and depletes stock from the store's inventory with the help of MySql and Inquirer",
+  "main": "bamazonCusomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/megangilpin/Storefront-CLI-App.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/megangilpin/Storefront-CLI-App/issues"
+  },
+  "homepage": "https://github.com/megangilpin/Storefront-CLI-App#readme",
+  "dependencies": {
+    "inquirer": "^6.5.0",
+    "lodash": "^4.17.14",
+    "mysql": "^2.17.1"
+  }
+}
