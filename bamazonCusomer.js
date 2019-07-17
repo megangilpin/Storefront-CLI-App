@@ -5,7 +5,7 @@ var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
-  password: "",
+  password: "Welcome468",
   database: "bamazon"
 })
 
@@ -41,32 +41,49 @@ function buyProduct() {
     },
   ]).then(function (answer) {
   var orderAmount = answer.amount
+  var id = answer.buy
     connection.query(
       "SELECT * FROM products WHERE ?",
       {
-        item_id: answer.buy
+        item_id: id
       }, 
       function (err, res) {
         if (err) throw err;
         var stockAmount = res[0].stock_quantity;
         var productName = res[0].product_name;
-        checkStock(stockAmount, orderAmount, productName);
+        var cost = res[0].price
+        checkStock(stockAmount, orderAmount, productName, cost, id);
       }
     )
   });
 }
 
-// checks if the stock quantity is less than the amount. If their is enough stock the order is processed
-function checkStock(stockAmount, orderAmount, productName) {
+// Checks if the stock quantity is less than the amount. If their is enough stock the order is processed
+function checkStock(stockAmount, orderAmount, productName, cost, id) {
   if (stockAmount < orderAmount) {
     console.log("Our stock on " + productName + " is too low, your order can not be processed. Sorry for the inconvenience.")
   }
   else{
-    processOrder();
+    processOrder(stockAmount, orderAmount, productName, id, cost);
   }
 }
 
-// processes an order
-function processOrder() {
-  console.log("Order has been processed")
-};
+// Processes an order and updates the mysql table with the new stock amount
+function processOrder(stockAmount, orderAmount, productName, id, cost) {
+  var stockUpdate = parseFloat(stockAmount) - parseFloat(orderAmount);
+  var orderTotal = parseFloat(orderAmount) * parseFloat(cost);
+  connection.query(
+    "UPDATE products SET ? WHERE ?",
+    [{
+      stock_quantity: stockUpdate 
+    },
+    {
+      item_id: id
+    }], 
+    function (err, res) {
+      if (err) throw err;
+      console.log("Your account will be charged $" + orderTotal + " for " + orderAmount + " units of " + productName)
+    }
+    )
+  };
+  
